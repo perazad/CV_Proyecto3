@@ -713,7 +713,7 @@ int main(int argc, char **argv) {
 		mr = falseNegative[trackerIdx] / (double)truePositive;
 		fpr = falsePositive[trackerIdx] / (double)truePositive;
 		mota = 1.0 - mr - fpr;
-		motp = IoUs / mostlyTracked[trackerIdx];
+		motp = IoUs[trackerIdx] / mostlyTracked[trackerIdx];
 		mt = (mostlyTracked[trackerIdx] / truePositive) * 100;
 		ml = (mostlyLost[trackerIdx] / truePositive) * 100;
 		printf("Tracker: %s\n", trackerTypes[trackerIdx]);
