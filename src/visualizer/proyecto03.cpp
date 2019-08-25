@@ -226,7 +226,7 @@ int main(int argc, char **argv) {
 	cv::Rect2d bbox7;
 	cv::Rect2d bboxI;									//bounding box for intersection
 	cv::Rect2d bboxU;									//bounding box for union
-	cv::Rect2d *bboxGT = new cv::Rect2d();				//bounding box poiter for ground truth
+	cv::Rect2d *bboxGT = new cv::Rect2d();				//bounding box pointer for ground truth
 
 	double IoU;										//Intersection over Union variable
 
@@ -238,6 +238,7 @@ int main(int argc, char **argv) {
 	int falsePositive[9] = {0};
 	double missRate[9] = {0.0};
 	double falsePositiveRate[9] = {0.0};
+	double IoUs[9] = {0.0};
 	double mr, fpr, mota, motp, mt, ml;
 	double mostlyTracked[9] = {0.0};
 	double mostlyLost[9] = {0.0};	
@@ -473,115 +474,125 @@ int main(int argc, char **argv) {
 					bboxI = bbox0 & (*bboxGT);
 					bboxU = bbox0 | (*bboxGT);
 
-					if(bboxI.area() > 0)	//Intersecting boxes
+					if(bboxI.area() > 0) {	//Intersecting boxes
 						IoU = bboxI.area() / bboxU.area();
+						IoUs[0] += IoU;
+					}
 					else	//Non-Intersecting boxes
 						IoU = 0.0;
 
 					if(IoU >= hitMissThres)
-						++mostlyTracked[trackerIdx];
+						++mostlyTracked[0];
 					else {
-						++mostlyLost[trackerIdx];
-						++falsePositive[trackerIdx];
-						++falseNegative[trackerIdx];
+						++mostlyLost[0];
+						++falsePositive[0];
+						++falseNegative[0];
 					}//else ends
 
 					//printf("Boosting tracker IoU:%f\n", IoU);
 				}//if (ok0 && boosting) ends
 				else if(boosting)
-					++falseNegative[trackerIdx];
+					++falseNegative[0];
 
 				if (ok1 && mil) {
 					cv::rectangle(frame, bbox1, cv::Scalar( 0, 255, 0 ), 2, 1 ); 
 					bboxI = bbox1 & (*bboxGT);
 					bboxU = bbox1 | (*bboxGT);
 
-					if(bboxI.area() > 0)	//Intersecting boxes
+					if(bboxI.area() > 0) {	//Intersecting boxes
 						IoU = bboxI.area() / bboxU.area();
+						IoUs[1] += IoU;
+					}
 					else	//Non-Intersecting boxes
 						IoU = 0.0;
 
 					//printf("MIL tracker IoU:%f\n", IoU);
 
 					if(IoU >= hitMissThres)
-						++mostlyTracked[trackerIdx];
+						++mostlyTracked[1];
 					else {
-						++mostlyLost[trackerIdx];
-						++falsePositive[trackerIdx];
-						++falseNegative[trackerIdx];
+						++mostlyLost[1];
+						++falsePositive[1];
+						++falseNegative[1];
 					}//else ends					
 				}//if (ok1 && mil) ends
 				else if(mil)
-					++falseNegative[trackerIdx];
+					++falseNegative[1];
 
 				if (ok2 && kcf) {
 					cv::rectangle(frame, bbox2, cv::Scalar( 0, 0, 255 ), 2, 1 ); 
 					bboxI = bbox2 & (*bboxGT);
 					bboxU = bbox2 | (*bboxGT);
 
-					if(bboxI.area() > 0)	//Intersecting boxes
+					if(bboxI.area() > 0) {	//Intersecting boxes
 						IoU = bboxI.area() / bboxU.area();
+						IoUs[2] += IoU;
+					}
 					else	//Non-Intersecting boxes
 						IoU = 0.0;
 
 					//printf("KCF tracker IoU:%f\n", IoU);
 
 					if(IoU >= hitMissThres)
-						++mostlyTracked[trackerIdx];
+						++mostlyTracked[2];
 					else {
-						++mostlyLost[trackerIdx];
-						++falsePositive[trackerIdx];
-						++falseNegative[trackerIdx];
+						++mostlyLost[2];
+						++falsePositive[2];
+						++falseNegative[2];
 					}//else ends					
 				}//if (ok2 && kcf) ends
 				else if(kcf)
-					++falseNegative[trackerIdx];
+					++falseNegative[2];
 
 				if (ok3 && tld) {
 					cv::rectangle(frame, bbox3, cv::Scalar( 255, 255, 0 ), 2, 1 ); 
 					bboxI = bbox3 & (*bboxGT);
 					bboxU = bbox3 | (*bboxGT);
 
-					if(bboxI.area() > 0)	//Intersecting boxes
+					if(bboxI.area() > 0) {	//Intersecting boxes
 						IoU = bboxI.area() / bboxU.area();
+						IoUs[3] += IoU;
+					}
 					else	//Non-Intersecting boxes
 						IoU = 0.0;
 
 					//printf("TLD tracker IoU:%f\n", IoU);
 
 					if(IoU >= hitMissThres)
-						++mostlyTracked[trackerIdx];
+						++mostlyTracked[3];
 					else {
-						++mostlyLost[trackerIdx];
-						++falsePositive[trackerIdx];
-						++falseNegative[trackerIdx];
+						++mostlyLost[3];
+						++falsePositive[3];
+						++falseNegative[3];
 					}//else ends
 				}//if (ok3 && tld)  ends
 				else if(tld)
-					++falseNegative[trackerIdx];
+					++falseNegative[3];
 
 				if (ok4 && medianflow) {
 					cv::rectangle(frame, bbox4, cv::Scalar( 255, 0, 255 ), 2, 1 ); 
 					bboxI = bbox4 & (*bboxGT);
 					bboxU = bbox4 | (*bboxGT);
 
-					if(bboxI.area() > 0)	//Intersecting boxes
+					if(bboxI.area() > 0) {	//Intersecting boxes
 						IoU = bboxI.area() / bboxU.area();
+						IoUs[4] += IoU;
+					}
 					else	//Non-Intersecting boxes
 						IoU = 0.0;
 
 					//printf("Meadian Flow tracker IoU:%f\n", IoU);
 
 					if(IoU >= hitMissThres)
-						++mostlyTracked[trackerIdx];
+						++mostlyTracked[4];
 					else {
-						++mostlyLost[trackerIdx];
-						++falsePositive[trackerIdx];
-						++falseNegative[trackerIdx];
+						++mostlyLost[4];
+						++falsePositive[4];
+						++falseNegative[4];
 					}//else ends
 				}//if (ok3 && medianflow)  ends
 				else if(medianflow)
-					++falseNegative[trackerIdx];
+					++falseNegative[4];
 
 				if (ok5 && goturn) {
 					vector<float> bboxVect;
@@ -592,69 +603,75 @@ int main(int argc, char **argv) {
 					bboxI = *bbox5 & (*bboxGT);
 					bboxU = *bbox5 | (*bboxGT);
 
-					if(bboxI.area() > 0)	//Intersecting boxes
+					if(bboxI.area() > 0) {	//Intersecting boxes
 						IoU = bboxI.area() / bboxU.area();
+						IoUs[5] += IoU;
+					}
 					else	//Non-Intersecting boxes
 						IoU = 0.0;
 
 					//printf("Goturn tracker IoU:%f\n", IoU);
 
 					if(IoU >= hitMissThres)
-						++mostlyTracked[trackerIdx];
+						++mostlyTracked[5];
 					else {
-						++mostlyLost[trackerIdx];
-						++falsePositive[trackerIdx];
-						++falseNegative[trackerIdx];
+						++mostlyLost[5];
+						++falsePositive[5];
+						++falseNegative[5];
 					}//else ends
 				}//if (ok5 && goturn) ends
 				else if(goturn)
-					++falseNegative[trackerIdx];
+					++falseNegative[5];
 
 				if (ok6 && mosse) {
 					cv::rectangle(frame, bbox6, cv::Scalar( 0, 255, 255 ), 2, 1 ); 
 					bboxI = bbox6 & (*bboxGT);
 					bboxU = bbox6 | (*bboxGT);
 
-					if(bboxI.area() > 0)	//Intersecting boxes
+					if(bboxI.area() > 0) {	//Intersecting boxes
 						IoU = bboxI.area() / bboxU.area();
+						IoUs[6] += IoU;
+					}
 					else	//Non-Intersecting boxes
 						IoU = 0.0;
 
 					//printf("Mosse tracker IoU:%f\n", IoU);
 
 					if(IoU >= hitMissThres)
-						++mostlyTracked[trackerIdx];
+						++mostlyTracked[6];
 					else {
-						++mostlyLost[trackerIdx];
-						++falsePositive[trackerIdx];
-						++falseNegative[trackerIdx];
+						++mostlyLost[6];
+						++falsePositive[6];
+						++falseNegative[6];
 					}//else ends
 				}//if (ok3 && mosse)  ends
 				else if(mosse)
-					++falseNegative[trackerIdx];
+					++falseNegative[6];
 
 				if (ok7 && csrt) {
 					cv::rectangle(frame, bbox7, cv::Scalar( 126, 0, 0 ), 2, 1 );
 					bboxI = bbox7 & (*bboxGT);
 					bboxU = bbox7 | (*bboxGT);
 
-					if(bboxI.area() > 0)	//Intersecting boxes
+					if(bboxI.area() > 0) {	//Intersecting boxes
 						IoU = bboxI.area() / bboxU.area();
+						IoUs[7] += IoU;
+					}
 					else	//Non-Intersecting boxes
 						IoU = 0.0;
 
 					//printf("CSRT tracker IoU:%f\n", IoU);
 
 					if(IoU >= hitMissThres)
-						++mostlyTracked[trackerIdx];
+						++mostlyTracked[7];
 					else {
-						++mostlyLost[trackerIdx];
-						++falsePositive[trackerIdx];
-						++falseNegative[trackerIdx];
+						++mostlyLost[7];
+						++falsePositive[7];
+						++falseNegative[7];
 					}//else ends
 				}//if (ok3 && csrt)  ends
 				else if(csrt)
-					++falseNegative[trackerIdx];
+					++falseNegative[7];
 
 		}//switch(state)  ends		
 	
@@ -696,8 +713,10 @@ int main(int argc, char **argv) {
 		mr = falseNegative[trackerIdx] / (double)truePositive;
 		fpr = falsePositive[trackerIdx] / (double)truePositive;
 		mota = 1.0 - mr - fpr;
+		motp = IoUs / mostlyTracked[trackerIdx];
 		mt = (mostlyTracked[trackerIdx] / truePositive) * 100;
 		ml = (mostlyLost[trackerIdx] / truePositive) * 100;
+		printf("Tracker: %s\n", trackerTypes[trackerIdx]);
 		printf("Hit-Miss threshold: %f\n", hitMissThres);
 		printf("True positives: %i\n", truePositive);
 		printf("False positives: %i\n", falsePositive[trackerIdx]); 
@@ -705,8 +724,30 @@ int main(int argc, char **argv) {
 		printf("Miss Rate (MR): %f\n", mr);
 		printf("False Positive Rate (FPR): %f\n", fpr);
 		printf("Multiple Object Tracking Accuracy (MOTA): %f\n", mota);
+		printf("Multiple Object Tracking Precision (MOTP): %f\n", motp);
 		printf("Mostly Tracked: %.2f\n", mt);
 		printf("Mostly Lost: %.2f\n", ml);
+	}
+	else {
+		for(int idxTrack = 0; idxTrack < 8; idxTrack++) {
+			mr = falseNegative[idxTrack] / (double)truePositive;
+			fpr = falsePositive[idxTrack] / (double)truePositive;
+			mota = 1.0 - mr - fpr;
+			motp = IoUs[idxTrack] / mostlyTracked[idxTrack];
+			mt = (mostlyTracked[idxTrack] / truePositive) * 100;
+			ml = (mostlyLost[idxTrack] / truePositive) * 100;
+			printf("Tracker: %s\n", trackerTypes[idxTrack].c_str());
+			printf("Hit-Miss threshold: %f\n", hitMissThres);
+			printf("True positives: %i\n", truePositive);
+			printf("False positives: %i\n", falsePositive[idxTrack]); 
+			printf("False negatives: %i\n", falseNegative[idxTrack]);
+			printf("Miss Rate (MR): %f\n", mr);
+			printf("False Positive Rate (FPR): %f\n", fpr);
+			printf("Multiple Object Tracking Accuracy (MOTA): %f\n", mota);
+			printf("Multiple Object Tracking Precision (MOTP): %f\n", motp);
+			printf("Mostly Tracked: %.2f\n", mt);
+			printf("Mostly Lost: %.2f\n", ml);
+		}//for(int idxTrack = 0; idxTrack < 8; idxTrack++) ends
 	}
 
 	//inputFile.close();
