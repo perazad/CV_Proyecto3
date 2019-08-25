@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TRACKERIDX=5
-BTFLYIDX=1
+BTFLYIDX=0
 CAMIDX=0
 DEPLOY=nets/tracker.prototxt
 CAFFE_MODEL=nets/models/pretrained_model/tracker.caffemodel
