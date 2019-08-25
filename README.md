@@ -18,7 +18,7 @@ download https://drive.google.com/open?id=1l-LvoaAW-jem_pdMoKKQ3fvUvjx02AWH
 
 unzip butterflies_videos.zip
 
-download models
+download models.zip from drive nets/models/
 
 cd nets/models/
 
